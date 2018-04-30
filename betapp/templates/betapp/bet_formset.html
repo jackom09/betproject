@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Bets{% endblock %}
+
+{% block content %}
+    <h2>List of available bets</h2>
+    <p>This is a list of matches available for betting.
+    It includes all matches starting within 3 days from now.<br/>
+    From this page you can place new bets or change existing ones. It is not necessary to fill all bets at once.
+    You can place or change any single bet - just fill only those fields that are assigned to it, omitting other.<br/>
+    Column 'Existing bet' shows bets that you have already placed. If you don't want to replace it with a new one,
+    just don't fill fields assigned to it.</p>
+    <p style="color: red">Remember - deadline for placing any single bet is falling at the beginning of the match,
+    what is highlighted in the 'Date and time' column.</p>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <table>
+            <thead>
+                <tr>
+                    <th align="left" width="200px">Date and time</th>
+                    <th align="left" width="30px">Stage</th>
+                    <th align="right" width="120px">Home team</th>
+                    <th align="center" width="30px">vs.</th>
+                    <th align="left" width="120px">Away team</th>
+                    <th align="center" width="150px" colspan="3">New bet</th>
+                    <th align="center" width="100px">Existing bet</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for match, form in match_formset_zip %}
+                <tr>
+                    <td align="left">{{ match.date_and_time }}</td>
+                    <td align="left">{{ match.tournament_stage.short_name }}</td>
+                    <td align="right">{{ match.home_team }}</td>
+                    <td align="center">vs.</td>
+                    <td align="left">{{ match.away_team }}</td>
+                    <td align="right">{{ form.home_score }}</td>
+                    <td align="center">:</td>
+                    <td align="left">{{ form.away_score }}</td>
+                    <td align="center">
+                        {% for bet in bets %}
+                            {% if bet.match == match and bet.player == request.user %}
+                                {{ bet.display_bet }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <p><input type="submit" value="Submit"/></p>
+    </form>
+    <p><a href="{% url 'index' %}">Home</a></p>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Home page{% endblock %}
+
+{% block content %}
+    <h2>Home</h2>
+    <p>You have {{ points }} points.</p>
+    <ul>
+        <li style="padding-bottom: 10px"><a href="{% url 'match_list' %}">Schedule and scores</a></li>
+        <li style="padding-bottom: 10px"><a href="{% url 'bet_formset' %}">Matches available for betting</a></li>
+        <li style="padding-bottom: 10px"><a href="{% url 'extra_bets' %}">Extra bets</a></li>
+        <li style="padding-bottom: 10px"><a href="{% url 'players_table' %}">Standings</a></li>
+        <li style="padding-bottom: 10px"><a href="{% url 'all_bets_list' %}">List of all bets</a></li>
+    </ul>
+{% endblock %}

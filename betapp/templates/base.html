@@ -1,0 +1,71 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>Betapp: {% block title %}{% endblock %}</title>
+</head>
+
+<body>
+
+<!-- navigation bar -->
+<nav>
+    <!-- login/logout links -->
+    {% if request.user.is_authenticated %}
+        <span>Logged User: {{ request.user.first_name }}</span>
+        /
+        <span><a href="{% url 'settings' %}">Settings</a></span>
+        /
+        <span><a href="{% url 'logout' %}">Logout</a></span>
+    {% else %}
+        <span><a href="{% url 'register' %}">New account</a></span>
+        /
+        <span><a href="{% url 'login' %}">Login</a></span>
+    {% endif %}
+</nav>
+
+<!-- brand/logo -->
+<h1>
+    <a  {% if request.user.is_authenticated %}
+            href="{% url 'index' %}"
+        {% else %}
+            href="{% url 'login' %}"
+        {% endif %}>
+        Betapp
+    </a>
+</h1>
+
+<p>
+    <a href="{% url 'index' %}">Home</a>
+    /
+    <a href="{% url 'match_list' %}">Schedule</a>
+    /
+    <a href="{% url 'bet_formset' %}">Bets form</a>
+    /
+    <a href="{% url 'players_table' %}">Standings</a>
+    /
+    <a href="{% url 'all_bets_list' %}">All bets</a>
+</p>
+
+<!-- content -->
+{% block content %}
+{% endblock %}
+
+<!-- footer: copyright, license, terms of use -->
+<footer>
+    ---
+    <p style="font-size: 90%;"><i>
+        <span><a href="#">Terms of use</a></span>
+        /
+        <span><a href="#">License</a></span>
+        /
+        <span>2018 Jacek Komorkowski. All rights reserved.</span>
+    </i></p>
+</footer>
+
+</body>
+
+</html>

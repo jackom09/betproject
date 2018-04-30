@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Table{% endblock %}
+
+{% block content %}
+    <h2>Players standings</h2>
+    <table>
+        <thead>
+            <tr>
+                <th align="right" width="50px">Place</th>
+                <th align="left" width="180px">Player's name</th>
+                <th align="right" width="100px">Match points</th>
+                <th align="right" width="100px">Extra points</th>
+                <th align="right" width="100px">Total points</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for player in players_list|dictsortreversed:"total_points" %}
+            <tr>
+                <td align="right">{% ifchanged player.total_points %}{{ forloop.counter }}.{% endifchanged %}</td>
+                <td align="left">{{ player.player.first_name }} {{ player.player.last_name }}</td>
+                <td align="right">{{ player.standard_points }}</td>
+                <td align="right">{{ player.extra_points }}</td>
+                <td align="right">{{ player.total_points }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p><a href="{% url 'index' %}">Home</a></p>
+{% endblock %}

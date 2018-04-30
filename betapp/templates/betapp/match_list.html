@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Results{% endblock %}
+
+{% block content %}
+    <h2>Schedule</h2>
+    <table>
+        <thead>
+            <tr>
+                <th align="left" width="200px"><b>Date</b></th>
+                <th align="left" width="120px"><b>Stage</b></th>
+                <th align="right" width="120px"><b>Home team</b></th>
+                <th align="center" width="30px"><b>vs.</b></th>
+                <th align="left" width="120px"><b>Away team</b></th>
+                <th align="center" width="50px"><b>Result</b></th>
+                <th align="center" width="100"><b>Your bet</b></th>
+                <th align="center" width="100"><b>Points</b></th>
+                <th align="left">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for match in matches %}
+                <tr>
+                    <td align="left">{{ match.date_and_time }}</td>
+                    <td align="left">{{ match.tournament_stage }}</td>
+                    <td align="right">{{ match.home_team }}</td>
+                    <td align="center">vs.</td>
+                    <td align="left">{{ match.away_team }}</td>
+                    <td align="center">{{ match.display_result }}</td>
+                    <td align="center">
+                        {% for bet in view.bets %}
+                            {% if bet.match == match and bet.player == request.user %}
+                                {{ bet.display_bet }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td align="center">
+                        {% for bet in view.bets %}
+                            {% if bet.match == match and bet.player == request.user %}
+                                {{ bet.points }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td align="left">
+                        {% if match.available_for_betting %}
+                            <a href="{% url 'bet_form' match.pk %}">Edit</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p>{% include "pagination.html" with page=page_obj %}</p>
+    <p><a href="{% url 'index' %}">Home</a></p>
+{% endblock %}

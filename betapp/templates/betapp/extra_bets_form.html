@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Extra bets{% endblock %}
+
+{% block content %}
+    <h2>Place or edit extra bets</h2>
+    <p>Use below form to place or edit your extra bets:<br/>
+    - choose your favourite footballer for tournament top goal scorer,<br/>
+    - choose your favourite team for tournament winner.<br/></p>
+    <p style="color: red">Remember - deadline for placing special bets is falling at the beginning of the first match
+    of the tournament!</p>
+    <form action="" method="post">
+        {% csrf_token %}
+        <table>
+            <thead>
+                <tr>
+                    <th align="left" width="150px">Bet description</th>
+                    <th align="center">Your choice</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>World cup winner:</td>
+                    {% if extra_bets.is_editable %}
+                        <td>{{ extra_bets_form.team }}</td>
+                    {% else %}
+                        <td>{{ extra_bets.team }}</td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td>Top goal scorer:</td>
+                    {% if extra_bets.is_editable %}
+                        <td>{{ extra_bets_form.footballer }}</td>
+                    {% else %}
+                        <td>{{ extra_bets.footballer }}</td>
+                    {% endif %}
+                </tr>
+                {% if not extra_bets.is_editable %}
+                    <tr>
+                        <td>Points scored:</td>
+                        <td>{{ extra_bets.points }}</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        {% if extra_bets.is_editable %}
+            <input type="submit" value="Submit"/>
+        {% endif %}
+    </form>
+    <p><a href="{% url 'index' %}">Home</a></p>
+{% endblock %}

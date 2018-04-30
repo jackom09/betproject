@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit bet{% endblock %}
+
+{% block content %}
+    <h2>Place or edit single bet</h2>
+    <form action="" method="post">
+        {% csrf_token %}
+        <table>
+            <thead>
+                <tr>
+                    <th align="left" width="200px"><b>Date and time</b></th>
+                    <th align="left" width="30px"><b>Stage</b></th>
+                    <th align="right" width="120px"><b>Home team</b></th>
+                    <th align="center" width="30px"><b>vs.</b></th>
+                    <th align="left" width="120px"><b>Away team</b></th>
+                    <th align="center" width="150px" colspan="3">Bet</th>
+                    <th align="left"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td align="left">{{ match.date_and_time }}</td>
+                    <td align="left">{{ match.tournament_stage }}</td>
+                    <td align="right">{{ match.home_team }}</td>
+                    <td align="center">vs.</td>
+                    <td align="left">{{ match.away_team }}</td>
+                    <td align="right">{{ form.home_score }}</td>
+                    <td align="center">:</td>
+                    <td align="left">{{ form.away_score }}</td>
+                    <td align="left">
+                        <input type="submit" value="Submit"
+                                {% if not match.available_for_betting %}disabled/>
+                                    <span style="color: red ">This match is not available for betting.</span>
+                                {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    <p><a href="{% url 'index' %}">Home</a></p>
+{% endblock %}

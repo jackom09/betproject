@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}All bets{% endblock %}
+
+{% block content %}
+    <h2>List of all bets</h2>
+    <table>
+        <thead>
+            <tr>
+                <th align="left" width="180px">Player</th>
+                <th align="left" width="100px">Team</th>
+                <th align="left" width="230px">Footballer</th>
+                {% for match in view.matches %}
+                    <th align="center" width="50">
+                        <small>{{ match.home_team.short_name }} - {{ match.away_team.short_name }}</small>
+                    </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in view.players %}
+                <tr>
+                    <td align="left">{{ player.first_name }} {{ player.last_name }}</td>
+                    <td align="left">
+                        {% for eb in view.extra_bets %}
+                            {% if eb.player == player %}
+                                {{ eb.team }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td align="left">
+                        {% for eb in view.extra_bets %}
+                            {% if eb.player == player %}
+                                {{ eb.footballer }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    {% for match in view.matches %}
+                        <td align="center">
+                            {% for bet in bets %}
+                                {% if bet.player == player and bet.match == match %}
+                                    {{ bet.display_bet }}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><a href="{% url 'index' %}">Home</a></p>
+{% endblock %}
