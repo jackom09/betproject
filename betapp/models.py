@@ -47,6 +47,9 @@ class User(AbstractUser):
     """User model."""
     username = None
     email = models.EmailField(_('email address'), unique=True)
+    is_active = models.BooleanField(default=False)
+    first_name = models.CharField(_('first name'), max_length=30, blank=False)
+    last_name = models.CharField(_('last name'), max_length=50, blank=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -101,7 +104,7 @@ class Footballer(models.Model):
         ordering = ('team', 'name',)
 
     def __str__(self):
-        return self.name + " (" + self.team.short_name + ")"
+        return self.name
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -117,19 +120,20 @@ class Match(models.Model):
     date_and_time = models.DateTimeField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    tournament_stage = models.ForeignKey(ScoringSystem, on_delete=models.CASCADE)
+    tournament_stage = models.ForeignKey(ScoringSystem, on_delete=models.CASCADE,
+                                         limit_choices_to={'other_points': 0})
 
     class Meta:
         ordering = ('date_and_time',)
         verbose_name_plural = 'Matches'
 
     def __str__(self):
-        return self.display_match() + " (" + str(self.date_and_time.strftime("%d/%m/%Y, %H:%M")) + ")"
+        return f'{self.display_match()} ({str(self.date_and_time.strftime("%d/%m/%Y, %H:%M"))})'
 
     def clean(self):
         if self.away_team == self.home_team:
-            raise ValidationError({"home_team": "Must be different from away team.",
-                                   "away_team": "Must be different from home team."})
+            raise ValidationError({'home_team': 'Must be different from away team.',
+                                   'away_team': 'Must be different from home team.'})
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -137,14 +141,14 @@ class Match(models.Model):
             bet.save()
 
     def display_match(self):
-        return self.home_team.name + " vs. " + self.away_team.name
+        return f'{self.home_team.name} vs. {self.away_team.name}'
     display_match.short_description = 'Teams'
 
     def display_result(self):
         if self.home_score is None or self.away_score is None:
-            return "-"
+            return f'-'
         else:
-            return str(self.home_score) + ":" + str(self.away_score)
+            return f'{str(self.home_score)} : {str(self.away_score)}'
     display_result.short_description = 'Result'
 
     def total_goals(self):
@@ -207,14 +211,14 @@ class Bet(models.Model):
         ordering = ('match__date_and_time', 'player', 'updated',)
 
     def __str__(self):
-        result = self.player.email + " (" + self.match.display_match() + ", " + self.display_bet() + ")"
+        result = f'{self.player.email} ({self.match.display_match()}, {self.display_bet()})'
         return result
 
     def display_bet(self):
         if self.home_score is None or self.away_score is None:
-            return "-"
+            return f'-'
         else:
-            return str(self.home_score) + ":" + str(self.away_score)
+            return f'{str(self.home_score)} : {str(self.away_score)}'
 
     @property
     def is_editable(self):
@@ -279,3 +283,14 @@ class ExtraBets(models.Model):
 
         self.points = points_for_goals + points_for_top_scorer + points_for_champion
         super().save(*args, **kwargs)
+
+
+class InfoText(models.Model):
+    title = models.CharField(max_length=200, unique=True, blank=False)
+    slug = models.SlugField(unique=True)
+    text = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.title}'

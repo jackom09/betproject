@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %}License{% endblock %}
+
+{% block content %}
+    <h2>{{ license.title }}</h2>
+    <p>{{ license.text|linebreaks }}</p>
+    <p><small>Last update: {{ license.updated }}</small></p>
+{% endblock %}

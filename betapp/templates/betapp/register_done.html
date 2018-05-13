@@ -3,7 +3,9 @@
 {% block title %}New account{% endblock %}
 
 {% block content %}
-    <h1>Hi, {{ new_user.first_name }}!</h1>
-    <p>Your account has been created successfully. You can login now.</p>
+    <h2>Hi, {{ new_user.first_name }}!</h2>
+    <p>You see this page because your account has been created successfully.
+        You will be able to log in when Admin verifies it.
+        It should take him from 5 minutes to 50 years, so good luck!</p>
     <a href="{% url 'login' %}">Login</a>
 {% endblock %}

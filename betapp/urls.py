@@ -30,4 +30,6 @@ urlpatterns = [
     path('extra_bets_form/', views.extra_bets_form_view, name='extra_bets'),
     path('players_table/', views.players_table_view, name='players_table'),
     path('all_bets_list/', views.AllBetsListView.as_view(), name='all_bets_list'),
+    path('license/', views.info_license, name='license'),
+    path('terms/', views.info_terms, name='terms'),
 ]

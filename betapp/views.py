@@ -5,8 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
 from django.forms import formset_factory
-from django.urls import reverse
-from .models import User, Match, Bet, ExtraBets
+from .models import User, Match, Bet, ExtraBets, InfoText
 from .forms import UserRegistrationForm, UserEditForm, BetForm, ExtraBetsForm
 
 
@@ -168,23 +167,39 @@ def players_table_view(request):
 
         players_list.append(player)
 
-    return render(request, 'betapp/players_table.html', {'players_list': players_list,})
+    return render(request, 'betapp/players_table.html', {'players_list': players_list})
 
 
 class AllBetsListView(LoginRequiredMixin, ListView):
-    model = Bet
+    # queryset = Bet.objects.filter(match__date_and_time__lte=timezone.now()).order_by('match__date_and_time')
+    model = User
+    context_object_name = 'players'
     template_name = 'betapp/all_bets.html'
-    context_object_name = 'bets'
-    queryset = Bet.objects.filter(match__date_and_time__lte=timezone.now()).order_by('match__date_and_time')
+
+    @staticmethod
+    def bets():
+        return Bet.objects.filter(match__date_and_time__lte=timezone.now()).order_by('match__date_and_time')
 
     @staticmethod
     def matches():
         return Match.objects.filter(date_and_time__lte=timezone.now())
 
-    @staticmethod
-    def players():
-        return User.objects.all()
+    # @staticmethod
+    # def players():
+    #     return User.objects.all()
 
     @staticmethod
     def extra_bets():
         return ExtraBets.objects.all()
+
+
+@login_required
+def info_license(request):
+    license = get_object_or_404(InfoText, slug='license')
+    return render(request, 'betapp/infos/license.html', {'license': license})
+
+
+@login_required
+def info_terms(request):
+    terms = get_object_or_404(InfoText, slug='terms-use')
+    return render(request, 'betapp/infos/terms.html', {'terms': terms})

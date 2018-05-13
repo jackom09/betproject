@@ -18,7 +18,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for player in view.players %}
+            {% for player in players %}
                 <tr>
                     <td align="left">{{ player.first_name }} {{ player.last_name }}</td>
                     <td align="left">
@@ -37,7 +37,7 @@
                     </td>
                     {% for match in view.matches %}
                         <td align="center">
-                            {% for bet in bets %}
+                            {% for bet in view.bets %}
                                 {% if bet.player == player and bet.match == match %}
                                     {{ bet.display_bet }}
                                 {% endif %}

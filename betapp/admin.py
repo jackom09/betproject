@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
 
-from .models import User, Team, Footballer, Match, GoalScorer, Bet, ExtraBets, ScoringSystem
+from .models import User, Team, Footballer, Match, GoalScorer, Bet, ExtraBets, ScoringSystem, InfoText
 
 
 @admin.register(User)
@@ -23,7 +23,8 @@ class UserAdmin(DjangoUserAdmin):
             'fields': ('email', 'password1', 'password2'),
         }),
     )
-    list_display = ('email', 'first_name', 'last_name', 'is_staff')
+    list_display = ('email', 'first_name', 'last_name', 'is_staff', 'is_active')
+    list_editable = ('is_active',)
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('last_name', 'first_name', 'email')
 
@@ -100,3 +101,11 @@ class ScoringSystemAdmin(admin.ModelAdmin):
     list_display = ('evaluated_field', 'result_hitted', 'goal_diff_hitted', 'direction_hitted', 'other_points')
     list_filter = ('evaluated_field',)
     search_fields = ('evaluated_field',)
+
+
+@admin.register(InfoText)
+class InfoTextAdmin(admin.ModelAdmin):
+    readonly_fields = ('created', 'updated')
+    fields = ('title', 'slug', 'text', 'created', 'updated')
+    list_display = ('title', 'updated')
+    prepopulated_fields = {'slug': ('title',)}
